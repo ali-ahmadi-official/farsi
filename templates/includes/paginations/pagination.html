@@ -1,0 +1,38 @@
+<div class="page">
+    {% if page_obj.has_previous %}
+    <a href="?page={{ page_obj.previous_page_number }}">
+        <div class="ago">
+            <p>قبلی</p>
+        </div>
+    </a>
+    {% if page_obj.number > 3 %}
+    <a href="?page=1" class="number">1</a>
+    {% if page_obj.number > 4 %}
+        <span class="number">...</span>
+        {% endif %}
+    {% endif %}
+    {% endif %}
+            
+    {% for num in page_obj.paginator.page_range %}
+    {% if page_obj.number == num %}
+    <a href="?page={{ num }}" class="number">{{ num }}</a>
+    {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %} 
+    <a href="?page={{ num }}" class="number">{{ num }}</a>
+    {% endif %}
+    {% endfor %}
+            
+    {% if page_obj.has_next %}
+    {% if page_obj.number < page_obj.paginator.num_pages|add:'-3' %}
+    <span class="number">...</span>
+    <a href="?page={{ page_obj.paginator.num_pages }}" class="number">{{ page_obj.paginator.num_pages }}</a>
+    {% elif page_obj.number < page_obj.paginator.num_pages|add:'-2' %} 
+    <a href="?page={{ page_obj.paginator.num_pages }}" class="number">{{ page_obj.paginator.num_pages }}</a>
+    {% endif %}
+            
+    <a href="?page={{ page_obj.next_page_number }}">
+        <div class="next">
+            <p>بعدی</p>
+        </div>
+    </a>
+    {% endif %}
+</div>

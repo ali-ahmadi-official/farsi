@@ -1,0 +1,63 @@
+{% extends 'base_super_admin_dashboard.html' %}
+{% load static %}
+
+{% block title %}
+پروفایل {{ profile.user }}
+{% endblock %}
+
+{% block page1 %}
+پروفایل ها
+{% endblock %}
+
+{% block page2 %}
+پروفایل {{ profile.user }}
+{% endblock %}
+
+{% block content %}
+<div class="col-12 my-grid">
+    <div>
+        <label>کاربر</label>
+        <input class="form-control" value="{{ profile.user }}" disabled>
+    </div>
+    <div>
+        <label>تلفن همراه</label>
+        <input class="form-control" value="{{ profile.phone_number }}" disabled>
+    </div>
+    <div>
+        <label>آدرس</label>
+        <input class="form-control" value="{{ profile.address }}" disabled>
+    </div>
+    <div>
+        <label>تلفن همراه بستگان</label>
+        <input class="form-control" value="{{ profile.phone_number_1 }}" disabled>
+        <input class="form-control" value="{{ profile.phone_number_2 }}" disabled>
+    </div>
+    <div>
+        <label>کد ملی</label>
+        <input class="form-control" value="{{ profile.national_code }}" disabled>
+    </div>
+    <div>
+        <label>تاریخ تولد</label>
+        <input class="form-control" value="{{ profile.birthdate }}" disabled>
+    </div>
+    <div>
+        <label>تصویر کارت ملی</label>
+        <img src="{{ profile.national_card.url }}" alt="تصویر کارت ملی" width="300px" style="display: block;">
+    </div>
+    {% if profile.guarantee %}
+    <div>
+        <label>تصویر ضمانت نامه</label>
+        <img src="{{ profile.guarantee.url }}" alt="تصویر ضمانت نامه" width="300px" style="display: block;">
+    </div>
+    {% else %}
+    <div>
+        <label>تصویر ضمانت نامه</label>
+        <input class="form-control" value="وارد نشده" disabled>
+    </div>
+    {% endif %}
+    <div>
+        <label>وضعیت</label>
+        <input class="form-control" value="{{ profile.get_status_display }}" disabled>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends 'base_manager_dashboard.html' %}
+{% load static %}
+
+{% block title %}
+تایید انجام {{ object }}
+{% endblock %}
+
+{% block page1 %}
+تایید انجام
+{% endblock %}
+
+{% block page2 %}
+تایید انجام {{ object }}
+{% endblock %}
+
+{% block content %}
+<div class="row" style="text-align: center; padding-top: 50px;">
+    <h5 style="color: #f97316;">
+        آیا از تایید انجام {{ object }} با شناسه {{ object.id }} اطمینان دارید؟
+    </h5>
+
+    <form method="post"> {% csrf_token %}
+        <br>
+        <br>
+        <button class="btn btn-netcopy_net" style="margin-left: 10px; color: red;">تایید</button>
+        <a href="{{ previous_url }}">بیخیال!</a>
+    </form>
+</div>
+{% endblock %}

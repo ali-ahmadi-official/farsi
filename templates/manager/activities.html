@@ -1,0 +1,54 @@
+{% extends 'base_manager_dashboard.html' %}
+{% load static %}
+
+{% block title %}
+لیست فعالیت های کارمندان
+{% endblock %}
+
+{% block page1 %}
+فعالیت های کارمندان
+{% endblock %}
+
+{% block page2 %}
+لیست فعالیت های کارمندان
+{% endblock %}
+
+{% block content %}
+<div class="col-12">
+    <h5>فیلتر فعالیت های کارمندان <span style="font-size: small; color: #f97316;">پر کردن تمامی موارد الزامی نیست</span></h5>
+    <form method="get" class="my-form">
+        <input title="عنوان" type="text" name="q" class="form-control w-40"
+            placeholder="عنوان" style="width: 100% !important;" value="{{ request.GET.q }}">
+        <select name="is_completed" class="form-control" title="وضعیت انجام">
+            <option value="">وضعیت انجام</option>
+            <option value=True {% if is_completed == "True" %}selected{% endif %}>انجام شده</option>
+            <option value=False {% if is_completed == "False" %}selected{% endif %}>انجام نشده</option>
+        </select>
+
+        <button class="my-btn"
+            style="background-color: #fff; border: 1px solid #0060ff; border-radius: 0.5rem; color: #0060ff; padding: 8px 32px; font-size: 0.75rem; font-weight: 700;">جستجو</button>
+    </form>
+</div>
+<div class="row">
+    <div class="text-center mb-4">
+        {% if hidden_activities_count > 0 %}
+        <div
+            style="background-color: #fff; border: 1px solid #eab308; border-radius: 0.5rem; color: #eab308; padding: 8px 32px; font-size: 0.75rem; font-weight: 700; margin-top: 40px;">
+            <svg style="margin-left: 8px; margin-bottom: 5px;" xmlns="http://www.w3.org/2000/svg" width="25" height="25"
+                fill="currentColor" class="bi bi-exclamation-triangle" viewBox="0 0 16 16">
+                <path
+                    d="M2.5 15a.5.5 0 1 1 0-1h1v-1a4.5 4.5 0 0 1 2.557-4.06c.29-.139.443-.377.443-.59v-.7c0-.213-.154-.451-.443-.59A4.5 4.5 0 0 1 3.5 3V2h-1a.5.5 0 0 1 0-1h11a.5.5 0 0 1 0 1h-1v1a4.5 4.5 0 0 1-2.557 4.06c-.29.139-.443.377-.443.59v.7c0 .213.154.451.443.59A4.5 4.5 0 0 1 12.5 13v1h1a.5.5 0 0 1 0 1zm2-13v1c0 .537.12 1.045.337 1.5h6.326c.216-.455.337-.963.337-1.5V2zm3 6.35c0 .701-.478 1.236-1.011 1.492A3.5 3.5 0 0 0 4.5 13s.866-1.299 3-1.48zm1 0v3.17c2.134.181 3 1.48 3 1.48a3.5 3.5 0 0 0-1.989-3.158C8.978 9.586 8.5 9.052 8.5 8.351z" />
+            </svg>
+            <span style="font-size: large;">شما {{ hidden_activities_count }} فعالیت در انتظار تایید از طرف مدیر کل
+                دارید.</span>
+        </div>
+        {% endif %}
+    </div>
+</div>
+<div class="col-12">
+    {% include "includes/tables/manager/activity_table.html" with title="فعالیت های کارمندان" %}
+</div>
+<div class="col-12">
+    {% include "includes/paginations/pagination.html" %}
+</div>
+{% endblock %}

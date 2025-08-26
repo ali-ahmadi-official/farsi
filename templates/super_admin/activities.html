@@ -1,0 +1,43 @@
+{% extends 'base_super_admin_dashboard.html' %}
+{% load static %}
+
+{% block title %}
+لیست فعالیت ها
+{% endblock %}
+
+{% block page1 %}
+فعالیت ها
+{% endblock %}
+
+{% block page2 %}
+لیست فعالیت ها
+{% endblock %}
+
+{% block content %}
+<div class="col-12">
+    <h5>فیلتر فعالیت ها <span style="font-size: small; color: #f97316;">پر کردن تمامی موارد الزامی نیست</span></h5>
+    <form method="get" class="my-form">
+        <input title="عنوان" type="text" name="q" class="form-control w-40"
+            placeholder="عنوان" style="width: 100% !important;" value="{{ request.GET.q }}">
+        <select name="is_completed" class="form-control" title="وضعیت انجام">
+            <option value="">وضعیت انجام</option>
+            <option value=True {% if is_completed == "True" %}selected{% endif %}>انجام شده</option>
+            <option value=False {% if is_completed == "False" %}selected{% endif %}>انجام نشده</option>
+        </select>
+        <select name="visibility" class="form-control" title="وضعیت نمایش">
+            <option value="">وضعیت نمایش</option>
+            <option value=True {% if visibility == "True" %}selected{% endif %}>قابل نمایش</option>
+            <option value=False {% if visibility == "False" %}selected{% endif %}>مخفی</option>
+        </select>
+
+        <button class="my-btn"
+            style="background-color: #fff; border: 1px solid #0060ff; border-radius: 0.5rem; color: #0060ff; padding: 8px 32px; font-size: 0.75rem; font-weight: 700;">جستجو</button>
+    </form>
+</div>
+<div class="col-12">
+    {% include "includes/tables/super_admin/activity_table.html" with title="فعالیت ها" %}
+</div>
+<div class="col-12">
+    {% include "includes/paginations/pagination.html" %}
+</div>
+{% endblock %}

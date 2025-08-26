@@ -1,0 +1,87 @@
+{% extends 'base_manager_dashboard.html' %}
+{% load static %}
+
+{% block title %}
+لیست فعالیت های من
+{% endblock %}
+
+{% block head %}
+<script src="https://cdn.jsdelivr.net/npm/jalaali-js/dist/jalaali.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jalaali-js/dist/jalaali.min.js"></script>
+
+<script src="https://unpkg.com/jalaali-js/dist/jalaali.js"></script>
+<script src="https://unpkg.com/jalaali-js/dist/jalaali.min.js"></script>
+{% endblock %}
+
+{% block page1 %}
+فعالیت های من
+{% endblock %}
+
+{% block page2 %}
+لیست فعالیت های من
+{% endblock %}
+
+{% block content %}
+<div class="col-12">
+    <h5>فیلتر فعالیت های من <span style="font-size: small; color: #f97316;">پر کردن تمامی موارد الزامی نیست</span></h5>
+    <form method="get" class="my-form">
+        <input title="عنوان" type="text" name="q" class="form-control w-40"
+            placeholder="عنوان" style="width: 100% !important;" value="{{ request.GET.q }}">
+        <select name="is_completed" class="form-control" title="وضعیت انجام">
+            <option value="">وضعیت انجام</option>
+            <option value=True {% if is_completed == "True" %}selected{% endif %}>انجام شده</option>
+            <option value=False {% if is_completed == "False" %}selected{% endif %}>انجام نشده</option>
+        </select>
+
+        <button class="my-btn"
+            style="background-color: #fff; border: 1px solid #0060ff; border-radius: 0.5rem; color: #0060ff; padding: 8px 32px; font-size: 0.75rem; font-weight: 700;">جستجو</button>
+    </form>
+</div>
+<div class="col-12">
+    {% include "includes/tables/manager/my_activity_table.html" with title="فعالیت های من" %}
+</div>
+<div class="col-12">
+    {% include "includes/paginations/pagination.html" %}
+</div>
+
+<script>
+function isNowInActivity(startDateStr, endDateStr, startTimeStr, endTimeStr) {
+  // تبدیل تاریخ شمسی به میلادی
+  const [sy, sm, sd] = startDateStr.split('/').map(Number);
+  const [ey, em, ed] = endDateStr.split('/').map(Number);
+
+  const gStart = jalaali.toGregorian(sy, sm, sd);
+  const gEnd = jalaali.toGregorian(ey, em, ed);
+
+  // ترکیب با ساعت
+  const [sh, smi] = startTimeStr.split(':').map(Number);
+  const [eh, emi] = endTimeStr.split(':').map(Number);
+
+  const startDate = new Date(gStart.gy, gStart.gm - 1, gStart.gd, sh, smi);
+  const endDate = new Date(gEnd.gy, gEnd.gm - 1, gEnd.gd, eh, emi);
+
+  const now = new Date();
+
+  return now >= startDate && now <= endDate;
+}
+
+// بررسی همه فعالیت‌ها
+document.querySelectorAll('.activity-data').forEach(el => {
+  const startDate = el.dataset.startDate;
+  const endDate = el.dataset.endDate;
+  const startTime = el.dataset.startTime;
+  const endTime = el.dataset.endTime;
+
+  const isActive = isNowInActivity(startDate, endDate, startTime, endTime);
+
+  const trueLink = el.querySelector('a.true');
+  const falseLink = el.querySelector('a.false');
+
+  if (isActive) {
+    trueLink.style.display = 'inline';
+  } else {
+    falseLink.style.display = 'inline';
+  }
+});
+</script>
+{% endblock %}

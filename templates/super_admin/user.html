@@ -1,0 +1,40 @@
+{% extends 'base_super_admin_dashboard.html' %}
+{% load static %}
+
+{% block title %}
+{{ user }}
+{% endblock %}
+
+{% block page1 %}
+کاربران
+{% endblock %}
+
+{% block page2 %}
+{{ user }}
+{% endblock %}
+
+{% block content %}
+<div class="col-12 my-grid mb-4">
+    <div>
+        <label>نام کاربری</label>
+        <input class="form-control" value="{{ user.username }}" disabled>
+    </div>
+    <div>
+        <label>نام و نام خانوادگی</label>
+        <input class="form-control" value="{{ user.get_full_name }}" disabled>
+    </div>
+    <div>
+        <label>سطح کاربر</label>
+        <input class="form-control" value="{{ user.get_user_type_display }}" disabled>
+    </div>
+    {% if user.manager %}
+    <div>
+        <label>مدیر این کاربر</label>
+        <input class="form-control" value="{{ user.manager }}" disabled>
+    </div>
+    {% endif %}
+</div>
+<div class="col-12">
+    {% include "includes/tables/super_admin/activity_table.html" with title="فعالیت های این کاربر" no_add="true" %}
+</div>
+{% endblock %}

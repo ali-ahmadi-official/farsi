@@ -1,0 +1,54 @@
+{% extends 'base_employee_dashboard.html' %}
+{% load static %}
+
+{% block title %}
+{{ activity }}
+{% endblock %}
+
+{% block page1 %}
+فعالیت ها
+{% endblock %}
+
+{% block page2 %}
+{{ activity }}
+{% endblock %}
+
+{% block content %}
+<div class="col-12 my-grid mb-4">
+    <div>
+        <label>عنوان</label>
+        <input class="form-control" value="{{ activity.title }}" disabled>
+    </div>
+    <div>
+        <label>تاریخ و ساعت شروع</label>
+        <input class="form-control" value="تاریخ {{ activity.start_date }} ساعت {{ activity.start_time }}" disabled>
+    </div>
+    <div>
+        <label>تاریخ و ساعت پایان</label>
+        <input class="form-control" value="تاریخ {{ activity.end_date }} ساعت {{ activity.end_time }}" disabled>
+    </div>
+    <div>
+        <label>حساسیت</label>
+        <input class="form-control" value="{{ activity.get_sensitivity_display }}" disabled>
+    </div>
+    <div>
+        <label>وضعیت انجام</label>
+        <input class="form-control"
+            {% if activity.is_completed %}
+            value="انجام شده" 
+            {% else %} 
+            value="انجام نشده" 
+            {% endif %}
+            disabled
+        >
+    </div>
+</div>
+<div class="col-12">
+    <div>
+        <label>توضیحات</label>
+        <textarea class="form-control" style="height: 300px !important;" disabled>
+            {{ activity.body|safe }}
+        </textarea>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,128 @@
+{% extends 'base_super_admin_dashboard.html' %}
+{% load static %}
+
+{% block title %}
+داشبورد مدیر کل
+{% endblock %}
+
+{% block page1 %}
+داشبورد
+{% endblock %}
+
+{% block page2 %}
+مدیر کل
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-3 col-sm-6 mb-lg-0" style="margin-bottom: 24px !important;">
+        <div class="card">
+            <div class="card-body p-3">
+                <div class="row">
+                    <div class="col-8">
+                        <div class="numbers">
+                            <p class="text-sm mb-0 text-capitalize font-weight-bold">تعداد کاربران</p>
+                            <h5 class="font-weight-bolder mb-0">
+                                {{ users_count }}
+                            </h5>
+                        </div>
+                    </div>
+                    <div class="col-4 text-start">
+                        <div class="icon icon-shape bg-primary shadow text-center border-radius-md"
+                            style="display: flex; justify-content: center; align-items: center;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                                style="color: #fff;" class="bi bi-person-heart" viewBox="0 0 16 16">
+                                <path
+                                    d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6m-5.784 6A2.24 2.24 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.3 6.3 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1zM4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-sm-6 mb-lg-0" style="margin-bottom: 24px !important;">
+        <div class="card">
+            <div class="card-body p-3">
+                <div class="row">
+                    <div class="col-8">
+                        <div class="numbers">
+                            <p class="text-sm mb-0 text-capitalize font-weight-bold">تعداد مدیران</p>
+                            <h5 class="font-weight-bolder mb-0">
+                                {{ managers_count }}
+                            </h5>
+                        </div>
+                    </div>
+                    <div class="col-4 text-start">
+                        <div class="icon icon-shape bg-primary shadow text-center border-radius-md"
+                            style="display: flex; justify-content: center; align-items: center;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                                style="color: #fff;" class="bi bi-person-heart" viewBox="0 0 16 16">
+                                <path
+                                    d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6m-5.784 6A2.24 2.24 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.3 6.3 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1zM4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-sm-6 mb-lg-0" style="margin-bottom: 24px !important;">
+        <div class="card">
+            <div class="card-body p-3">
+                <div class="row">
+                    <div class="col-8">
+                        <div class="numbers">
+                            <p class="text-sm mb-0 text-capitalize font-weight-bold">تعداد کارمندان</p>
+                            <h5 class="font-weight-bolder mb-0">
+                                {{ employees_count }}
+                            </h5>
+                        </div>
+                    </div>
+                    <div class="col-4 text-start">
+                        <div class="icon icon-shape bg-primary shadow text-center border-radius-md"
+                            style="display: flex; justify-content: center; align-items: center;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                                style="color: #fff;" class="bi bi-person-heart" viewBox="0 0 16 16">
+                                <path
+                                    d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6m-5.784 6A2.24 2.24 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.3 6.3 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1zM4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-sm-6 mb-lg-0" style="margin-bottom: 24px !important;">
+        <div class="card">
+            <div class="card-body p-3">
+                <div class="row">
+                    <div class="col-8">
+                        <div class="numbers">
+                            <p class="text-sm mb-0 text-capitalize font-weight-bold">تعداد فعالیت ها</p>
+                            <h5 class="font-weight-bolder mb-0">
+                                {{ activities_count }}
+                            </h5>
+                        </div>
+                    </div>
+                    <div class="col-4 text-start">
+                        <div class="icon icon-shape bg-primary shadow text-center border-radius-md"
+                            style="display: flex; justify-content: center; align-items: center;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                                style="color: #fff;" class="bi bi-person-heart" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M6 2a.5.5 0 0 1 .47.33L10 12.036l1.53-4.208A.5.5 0 0 1 12 7.5h3.5a.5.5 0 0 1 0 1h-3.15l-1.88 5.17a.5.5 0 0 1-.94 0L6 3.964 4.47 8.171A.5.5 0 0 1 4 8.5H.5a.5.5 0 0 1 0-1h3.15l1.88-5.17A.5.5 0 0 1 6 2"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12">
+        {% include "includes/tables/super_admin/profile_table.html" with title="پروفایل های در انتظار تایید" %}
+    </div>
+    <div class="col-12">
+        {% include "includes/tables/super_admin/activity_table.html" with title="فعالیت های در انتظار تایید (برای نمایش)" no_add="true" %}
+    </div>
+</div>
+{% endblock %}

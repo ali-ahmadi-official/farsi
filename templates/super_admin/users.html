@@ -1,0 +1,41 @@
+{% extends 'base_super_admin_dashboard.html' %}
+{% load static %}
+
+{% block title %}
+لیست کاربران
+{% endblock %}
+
+{% block page1 %}
+کاربران
+{% endblock %}
+
+{% block page2 %}
+لیست کاربران
+{% endblock %}
+
+{% block content %}
+<div class="col-12">
+    <h5>فیلتر کاربران <span style="font-size: small; color: #f97316;">پر کردن تمامی موارد الزامی نیست</span></h5>
+    <form method="get" class="my-form">
+        <input title="نام و نام خانوادگی" type="text" name="search_full_name" class="form-control w-40"
+            placeholder="نام و نام خانوادگی" style="width: 100% !important;" value="{{ request.GET.search_full_name }}">
+        <input title="نام کاربری" type="text" name="search_user_name" class="form-control w-40" placeholder="نام کاربری"
+            style="width: 100% !important;" value="{{ request.GET.search_user_name }}">
+        <select name="user_type" class="form-control" title="سطح کاربر">
+            <option value="">سطح کاربر</option>
+            <option value="1" {% if user_type == "1" %}selected{% endif %}>مدیر کل</option>
+            <option value="2" {% if user_type == "2" %}selected{% endif %}>مدیر</option>
+            <option value="3" {% if user_type == "3" %}selected{% endif %}>کارمند</option>
+        </select>
+
+        <button class="my-btn"
+            style="background-color: #fff; border: 1px solid #0060ff; border-radius: 0.5rem; color: #0060ff; padding: 8px 32px; font-size: 0.75rem; font-weight: 700;">جستجو</button>
+    </form>
+</div>
+<div class="col-12">
+    {% include "includes/tables/super_admin/user_table.html" with title="کاربران" %}
+</div>
+<div class="col-12">
+    {% include "includes/paginations/pagination.html" %}
+</div>
+{% endblock %}

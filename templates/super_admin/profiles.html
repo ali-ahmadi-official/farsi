@@ -1,0 +1,37 @@
+{% extends 'base_super_admin_dashboard.html' %}
+{% load static %}
+
+{% block title %}
+لیست پروفایل ها
+{% endblock %}
+
+{% block page1 %}
+پروفایل ها
+{% endblock %}
+
+{% block page2 %}
+لیست پروفایل ها
+{% endblock %}
+
+{% block content %}
+<div class="col-12">
+    <h5>فیلتر پروفایل ها <span style="font-size: small; color: #f97316;">پر کردن تمامی موارد الزامی نیست</span></h5>
+    <form method="get" class="my-form">
+        <select name="status" class="form-control" title="وضعیت پروفایل">
+            <option value="">وضعیت پروفایل</option>
+            <option value="1" {% if status == "1" %}selected{% endif %}>در انتظار تایید</option>
+            <option value="2" {% if status == "2" %}selected{% endif %}>تایید شده</option>
+            <option value="3" {% if status == "3" %}selected{% endif %}>رد شده</option>
+        </select>
+
+        <button class="my-btn"
+            style="background-color: #fff; border: 1px solid #0060ff; border-radius: 0.5rem; color: #0060ff; padding: 8px 32px; font-size: 0.75rem; font-weight: 700;">جستجو</button>
+    </form>
+</div>
+<div class="col-12">
+    {% include "includes/tables/super_admin/profile_table.html" with title="پروفایل ها" %}
+</div>
+<div class="col-12">
+    {% include "includes/paginations/pagination.html" %}
+</div>
+{% endblock %}
