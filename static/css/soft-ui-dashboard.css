@@ -210,7 +210,8 @@ body {
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 
-a, span {
+a,
+span {
   font-family: sans-serif;
 }
 
@@ -28000,14 +28001,15 @@ pre[class*=language-] {
   grid-column: 5 / span 2;
   text-align: center;
 }
+
 .error {
-    max-width: 220px;
-    padding: 10px;
-    color: red;
-    background-color: rgba(246, 10, 10, 0.2);
-    border: 2px solid red;
-    border-radius: 15px;
-    margin: 10px 0;
+  max-width: 220px;
+  padding: 10px;
+  color: red;
+  background-color: rgba(246, 10, 10, 0.2);
+  border: 2px solid red;
+  border-radius: 15px;
+  margin: 10px 0;
 }
 
 .login-body {
@@ -28023,28 +28025,28 @@ pre[class*=language-] {
 }
 
 .page {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding-top: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-top: 30px;
 }
 
 .page .ago,
 .page .next,
 .page .number {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: #0060ff;
-    color: #fff;
-    padding: 10px;
-    margin: 0 10px;
-    border-radius: 10px;
-    cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #0060ff;
+  color: #fff;
+  padding: 10px;
+  margin: 0 10px;
+  border-radius: 10px;
+  cursor: pointer;
 }
 
 .page p {
-    margin-bottom: 0;
+  margin-bottom: 0;
 }
 
 .my-nav {
@@ -28104,12 +28106,18 @@ pre[class*=language-] {
 }
 
 .checkbox-multiple {
-  background-color: white;  /* پس‌زمینه سفید */
-  max-height: 100px;        /* ارتفاع حداکثر */
-  overflow-y: auto;         /* اسکرول عمودی فعال میشه اگر ارتفاع بیشتر بشه */
-  padding: 10px;            /* فاصله داخلی برای زیبایی */
-  border: 1px solid #ccc;   /* یک کادر ملایم دورش */
-  border-radius: 4px;       /* گوشه‌های گرد */
+  background-color: white;
+  /* پس‌زمینه سفید */
+  max-height: 100px;
+  /* ارتفاع حداکثر */
+  overflow-y: auto;
+  /* اسکرول عمودی فعال میشه اگر ارتفاع بیشتر بشه */
+  padding: 10px;
+  /* فاصله داخلی برای زیبایی */
+  border: 1px solid #ccc;
+  /* یک کادر ملایم دورش */
+  border-radius: 4px;
+  /* گوشه‌های گرد */
 }
 
 .checkbox-multiple input[type="checkbox"] {
@@ -28142,4 +28150,36 @@ pre[class*=language-] {
   font-size: 14px;
   line-height: 18px;
   user-select: none;
+}
+
+.tick-count {
+  position: absolute;
+  transform: translate(-10px, -50px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 25px;
+  height: 25px;
+  padding: 5px;
+  border-radius: 100%;
+  background-color: #cc2127;
+  color: #fff;
+  font-size: x-small;
+}
+
+.unseen {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #cc2127;
+  color: #fff;
+  position: absolute;
+  top: -10px;
+  right: 0;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  text-align: center;
+  line-height: 20px;
+  font-size: 12px;
 }
