@@ -1,8 +1,9 @@
 import datetime
 from functools import wraps
-from django.core.exceptions import PermissionDenied
 from django.utils.timezone import now, make_aware
-from .models import Activity, Profile, CustomUser
+from django.core.exceptions import PermissionDenied
+from django.http import HttpResponseForbidden
+from .models import Activity, Profile, CustomUser, Conversation, Message
 from . import jalali
 
 # --- CBV ---
@@ -214,4 +215,26 @@ def active_time_required(view_func):
         if not (start <= now() <= end):
             raise PermissionDenied("این فعالیت در بازه زمانی معتبر نیست.")
         return view_func(request, *args, **kwargs)
+    return _wrapped
+
+# --- FBV ---
+def user_in_conversation_or_admin(view_func):
+    @wraps(view_func)
+    def _wrapped(request, *args, **kwargs):
+        conversation = Conversation.objects.get(pk=kwargs['pk'])
+
+        if request.user.user_type == '1' or request.user in conversation.users.all():
+            return view_func(request, *args, **kwargs)
+        raise HttpResponseForbidden("دسترسی ندارید.")
+    return _wrapped
+
+# --- FBV ---
+def user_is_message_owner_or_admin(view_func):
+    @wraps(view_func)
+    def _wrapped(request, *args, **kwargs):
+        message = Message.objects.get(pk=kwargs['pk'])
+
+        if request.user.user_type == '1' or message.user == request.user:
+            return view_func(request, *args, **kwargs)
+        raise HttpResponseForbidden("دسترسی ندارید.")
     return _wrapped

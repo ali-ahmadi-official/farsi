@@ -1,0 +1,23 @@
+{% extends 'base_manager_dashboard.html' %}
+{% load static %}
+
+{% block title %}
+لیست تیکت ها
+{% endblock %}
+
+{% block page1 %}
+تیکت ها
+{% endblock %}
+
+{% block page2 %}
+لیست تیکت ها
+{% endblock %}
+
+{% block content %}
+<div class="col-12">
+    {% include "includes/tables/manager/ticket_table.html" with title="تیکت ها" %}
+</div>
+<div class="col-12">
+    {% include "includes/paginations/pagination.html" %}
+</div>
+{% endblock %}

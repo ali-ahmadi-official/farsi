@@ -1,12 +1,26 @@
-from django.shortcuts import render, redirect
+from collections import defaultdict
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse, reverse_lazy
 from django.contrib import messages
 from django.contrib.auth import authenticate, login as auth_login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
+from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView, View
+from django.http import HttpResponseForbidden
 from django.db.models import Q
-from . import models, forms, mixins
+from . import models, forms, mixins, jalali, extras
+
+def custom_context(request):
+    if request.user.is_authenticated:
+        not_seen_messages = models.Message.objects.filter(conversation__users=request.user, seen=False).exclude(user=request.user)
+
+        return {
+            'not_seen_messages_count': not_seen_messages.count(),
+        }
+    else:
+        return {
+            'not_login': True,
+        }
 
 def main(request):
     return redirect('login')
@@ -50,7 +64,7 @@ def super_admin_dashboard(request):
         'employees_count': users.filter(user_type='3').count(),
         'activities_count': activities.filter(visibility=True).count(),
         'profiles': profiles_awaiting,
-        'activities': activities.filter(visibility=False)
+        'activities': activities.filter(visibility=False),
     }
 
     return render(request, 'super_admin/dashboard.html', context)
@@ -259,6 +273,61 @@ class SuperAdminActivityDeleteView(LoginRequiredMixin, mixins.RoleRequiredMixin,
         context['previous_url'] = self.request.META.get('HTTP_REFERER', '/')
         return context
 
+class SuperAdminTicketListView(LoginRequiredMixin, mixins.RoleRequiredMixin, ListView):
+    allowed_roles = ['1']
+    model = models.Conversation
+    template_name = 'super_admin/tickets.html'
+    context_object_name = 'tickets'
+    paginate_by = 100
+    ordering = ['-id']
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        current_user = self.request.user
+
+        unseen_counts = {}
+
+        for conversation in context['tickets']:
+            unseen_count = conversation.conversation_messages.filter(
+                seen=False
+            ).exclude(user=current_user).count()
+
+            unseen_counts[conversation.id] = unseen_count
+
+        context['unseen_counts'] = unseen_counts
+        return context
+
+class SuperAdminTicketCreateOrRedirectView(LoginRequiredMixin, mixins.RoleRequiredMixin, View):
+    allowed_roles = ['1']
+    form_class = forms.SuperAdminTicketCreateForm
+    template_name = 'super_admin/add_ticket.html'
+
+    def get(self, request, *args, **kwargs):
+        form = self.form_class(user=request.user)
+        return render(request, self.template_name, {'form': form})
+
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST, user=request.user)
+        if form.is_valid():
+            selected_user = form.cleaned_data['user']
+            current_user = request.user
+
+            conversations = models.Conversation.objects.filter(users=current_user).filter(users=selected_user)
+            conversation = None
+            for conv in conversations:
+                if conv.users.count() == 2:
+                    conversation = conv
+                    break
+
+            if conversation:
+                return redirect('chat', pk=conversation.pk)
+            else:
+                conversation = models.Conversation.objects.create()
+                conversation.users.add(current_user, selected_user)
+                return redirect('chat', pk=conversation.pk)
+
+        return render(request, self.template_name, {'form': form})
+
 # endregion
 
 # region manager views
@@ -438,6 +507,65 @@ class ManagerActivityDetailView(LoginRequiredMixin, mixins.RoleRequiredMixin, mi
     template_name = 'manager/activity.html'
     context_object_name = 'activity'
 
+class ManagerTicketListView(LoginRequiredMixin, mixins.RoleRequiredMixin, ListView):
+    allowed_roles = ['2']
+    model = models.Conversation
+    template_name = 'manager/tickets.html'
+    context_object_name = 'tickets'
+    paginate_by = 100
+    ordering = '-id'
+
+    def get_queryset(self):
+        return super().get_queryset().filter(users=self.request.user)
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        current_user = self.request.user
+
+        unseen_counts = {}
+
+        for conversation in context['tickets']:
+            unseen_count = conversation.conversation_messages.filter(
+                seen=False
+            ).exclude(user=current_user).count()
+
+            unseen_counts[conversation.id] = unseen_count
+
+        context['unseen_counts'] = unseen_counts
+        return context
+
+class ManagerTicketCreateOrRedirectView(LoginRequiredMixin, mixins.RoleRequiredMixin, View):
+    allowed_roles = ['2']
+    form_class = forms.ManagerTicketCreateForm
+    template_name = 'manager/add_ticket.html'
+
+    def get(self, request, *args, **kwargs):
+        form = self.form_class(user=request.user)
+        return render(request, self.template_name, {'form': form})
+
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST, user=request.user)
+        if form.is_valid():
+            selected_user = form.cleaned_data['user']
+            current_user = request.user
+
+            conversations = models.Conversation.objects.filter(users=current_user).filter(users=selected_user)
+            conversation = None
+            for conv in conversations:
+                if conv.users.count() == 2:
+                    conversation = conv
+                    break
+
+            if conversation:
+                return redirect('chat', pk=conversation.pk)
+            else:
+                conversation = models.Conversation.objects.create()
+                conversation.users.add(current_user, selected_user)
+                return redirect('chat', pk=conversation.pk)
+
+        return render(request, self.template_name, {'form': form})
+
 # endregion
 
 # region employee views
@@ -531,4 +659,168 @@ class EmployeeActivityUpdateView(LoginRequiredMixin, mixins.RoleRequiredMixin, m
         context['previous_url'] = self.request.META.get('HTTP_REFERER', '/')
         return context
 
+class EmployeeTicketListView(LoginRequiredMixin, mixins.RoleRequiredMixin, ListView):
+    allowed_roles = ['3']
+    model = models.Conversation
+    template_name = 'employee/tickets.html'
+    context_object_name = 'tickets'
+    paginate_by = 100
+    ordering = '-id'
+
+    def get_queryset(self):
+        return super().get_queryset().filter(users=self.request.user)
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        current_user = self.request.user
+
+        unseen_counts = {}
+
+        for conversation in context['tickets']:
+            unseen_count = conversation.conversation_messages.filter(
+                seen=False
+            ).exclude(user=current_user).count()
+
+            unseen_counts[conversation.id] = unseen_count
+
+        context['unseen_counts'] = unseen_counts
+        return context
+
+class EmployeeTicketCreateOrRedirectView(LoginRequiredMixin, mixins.RoleRequiredMixin, View):
+    allowed_roles = ['3']
+    form_class = forms.EmployeeTicketCreateForm
+    template_name = 'employee/add_ticket.html'
+
+    def get(self, request, *args, **kwargs):
+        form = self.form_class(user=request.user)
+        return render(request, self.template_name, {'form': form})
+
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST, user=request.user)
+        if form.is_valid():
+            selected_user = form.cleaned_data['user']
+            current_user = request.user
+
+            conversations = models.Conversation.objects.filter(users=current_user).filter(users=selected_user)
+            conversation = None
+            for conv in conversations:
+                if conv.users.count() == 2:
+                    conversation = conv
+                    break
+
+            if conversation:
+                return redirect('chat', pk=conversation.pk)
+            else:
+                conversation = models.Conversation.objects.create()
+                conversation.users.add(current_user, selected_user)
+                return redirect('chat', pk=conversation.pk)
+
+        return render(request, self.template_name, {'form': form})
+
 # endregion
+
+@login_required
+@mixins.user_in_conversation_or_admin
+def chat(request, pk):
+    user = request.user
+    conversation = models.Conversation.objects.get(pk=pk)
+    messages = models.Message.objects.filter(conversation=conversation).order_by('created_at')
+
+    you_messages_not_seen = messages.exclude(user=user).filter(seen=False)
+    for you_message_not_seen in you_messages_not_seen:
+        you_message_not_seen.seen = True
+        you_message_not_seen.save()
+
+    grouped_messages = defaultdict(list)
+    for message in messages:
+        msg_date = message.created_at.date()
+        grouped_messages[msg_date].append(message)
+
+    messages_by_day = []
+    for day, msgs in grouped_messages.items():
+        y, m, d = jalali.Gregorian(day).persian_tuple()
+        persian_date = f"{d} {extras.PERSIAN_MONTHS[m]} {y}"
+        messages_by_day.append({
+            "date": persian_date,
+            "messages": msgs
+        })
+
+    context = {
+        "user": user,
+        "conversation": conversation,
+        "messages_by_day": messages_by_day
+    }
+    return render(request, 'chat/chat.html', context)
+
+# def update_chat(request, pk):
+#     after_id = request.GET.get('after_id')
+#     user = request.user
+#     conversation = models.Conversation.objects.get(pk=pk)
+
+#     messages = models.Message.objects.filter(conversation=conversation).order_by('created_at')
+#     if after_id:
+#         messages = messages.filter(id__gt=after_id)
+
+#     you_messages_not_seen = messages.exclude(user=user).filter(seen=False)
+#     for you_message_not_seen in you_messages_not_seen:
+#         you_message_not_seen.seen = True
+#         you_message_not_seen.save()
+
+#     grouped_messages = defaultdict(list)
+#     for message in messages:
+#         msg_date = message.created_at.date()
+#         grouped_messages[msg_date].append(message)
+
+#     messages_by_day = []
+#     for day, msgs in grouped_messages.items():
+#         y, m, d = jalali.Gregorian(day).persian_tuple()
+#         persian_date = f"{d} {extras.PERSIAN_MONTHS[m]} {y}"
+#         messages_by_day.append({
+#             "date": persian_date,
+#             "messages": msgs
+#         })
+
+#     context = {
+#         "user": user,
+#         "conversation": conversation,
+#         "messages_by_day": messages_by_day
+#     }
+
+#     return render(request, 'chat/update_chat.html', context)
+
+@login_required
+@mixins.user_in_conversation_or_admin
+def add_chat(request, pk):
+    user = request.user
+    conversation = get_object_or_404(models.Conversation, pk=pk)
+
+    if request.method == 'POST':
+        form = forms.ChatCreateForm(request.POST, request.FILES)
+        if form.is_valid():
+            message = form.save(commit=False)
+            message.user = user
+            message.conversation = conversation
+            message.save()
+    return redirect('chat', pk=conversation.pk)
+
+@login_required
+@mixins.user_is_message_owner_or_admin
+def edit_chat(request, pk):
+    message = get_object_or_404(models.Message, pk=pk)
+
+    if request.method == 'POST':
+        form = forms.ChatUpdateForm(request.POST, request.FILES, instance=message)
+        if form.is_valid():
+            form.save()
+    return redirect('chat', pk=message.conversation.pk)
+
+@login_required
+@mixins.user_is_message_owner_or_admin
+def delete_chat(request, pk):
+    message = get_object_or_404(models.Message, pk=pk)
+
+    if request.method == 'POST':
+        conversation_pk = message.conversation.pk
+        message.delete()
+        return redirect('chat', pk=conversation_pk)

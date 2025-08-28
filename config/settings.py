@@ -23,9 +23,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-urqm3qtb**x=w6w-qcs#dvhqrrf9fr-681!-!x$!pyl0t43&7@'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = ['farsi.pythonanywhere.com', '127.0.0.1']
+ALLOWED_HOSTS = ['farsi.pythonanywhere.com', '127.0.0.1', 'localhost']
 
 
 # Application definition
@@ -63,6 +63,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.tz',
+                'app.views.custom_context',
             ],
         },
     },

@@ -1,0 +1,36 @@
+{% extends 'base_employee_dashboard.html' %}
+{% load static %}
+
+{% block title %}
+افزودن تیکت
+{% endblock %}
+
+{% block page1 %}
+تیکت ها
+{% endblock %}
+
+{% block page2 %}
+افزودن تیکت
+{% endblock %}
+
+{% block content %}
+<div class="col-12">
+    <form method="post">
+        {% csrf_token %}
+        <h3 style="margin-bottom: 20px;">فرم تیکت</h3>
+
+        {% if form.non_field_errors %}
+        {% for error in form.non_field_errors %}
+        <p class="error">{{ error }}</p>
+        {% endfor %}
+        {% endif %}
+
+        <div class="my-grid">
+        {{ form }}
+        </div>
+        <div class="text-center">
+            <button type="submit" class="btn bg-gradient-info w-100 mt-4 mb-0">افزودن تیکت</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

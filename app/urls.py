@@ -24,6 +24,8 @@ urlpatterns = [
     path('super-admin/activities/<int:pk>/', views.SuperAdminActivityDetailView.as_view(), name='super_admin_activity'),
     path('super-admin/activities/<int:pk>/edit/', views.SuperAdminActivityUpdateView.as_view(), name='super_admin_edit_activity'),
     path('super-admin/activities/<int:pk>/delete/', views.SuperAdminActivityDeleteView.as_view(), name='super_admin_delete_activity'),
+    path('super-admin/tickets/', views.SuperAdminTicketListView.as_view(), name='super_admin_tickets'),
+    path('super-admin/tickets/add/', views.SuperAdminTicketCreateOrRedirectView.as_view(), name='super_admin_add_ticket'),
 
     # manager urls
 
@@ -36,6 +38,8 @@ urlpatterns = [
     path('manager/activities/employee/', views.ManagerActivityListView.as_view(), name='manager_activities'),
     path('manager/activities/employee/add/', views.manager_create_bulk_activity, name='manager_add_activity'),
     path('manager/activities/employee/<int:pk>/', views.ManagerActivityDetailView.as_view(), name='manager_activity'),
+    path('manager/tickets/', views.ManagerTicketListView.as_view(), name='manager_tickets'),
+    path('manager/tickets/add/', views.ManagerTicketCreateOrRedirectView.as_view(), name='manager_add_ticket'),
 
     # employee urls
 
@@ -46,4 +50,14 @@ urlpatterns = [
     path('employee/activities/', views.EmployeeActivityListView.as_view(), name='employee_activities'),
     path('employee/activities/<int:pk>/', views.EmployeeActivityDetailView.as_view(), name='employee_activity'),
     path('employee/activities/<int:pk>/is-completed/', views.EmployeeActivityUpdateView.as_view(), name='employee_edit_activity'),
+    path('employee/tickets/', views.EmployeeTicketListView.as_view(), name='employee_tickets'),
+    path('employee/tickets/add/', views.EmployeeTicketCreateOrRedirectView.as_view(), name='employee_add_ticket'),
+
+    # chat urls
+
+    path('chats/<int:pk>/', views.chat, name='chat'),
+    # path('chats/<int:pk>/update/', views.update_chat, name='update_chat'),
+    path('chats/<int:pk>/add/', views.add_chat, name='add_chat'),
+    path('chats/message/<int:pk>/edit/', views.edit_chat, name='edit_chat'),
+    path('chats/message/<int:pk>/delete/', views.delete_chat, name='delete_chat'),
 ]

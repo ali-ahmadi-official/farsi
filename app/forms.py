@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm
+from django.db.models import Q
 from . import models
 
 CustomUser = get_user_model()
@@ -142,3 +143,61 @@ class ActivityUpdateForm(forms.ModelForm):
                 self.fields[field].widget.attrs.update({
                     'type': 'time'
                 })
+
+class SuperAdminTicketCreateForm(forms.Form):
+    user = forms.ModelChoiceField(
+        queryset=models.CustomUser.objects.none(),
+        widget=forms.Select(attrs=attrs),
+        label='کاربر'
+    )
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
+        super().__init__(*args, **kwargs)
+        if user is not None:
+            self.fields['user'].queryset = CustomUser.objects.all().exclude(id=user.id)
+
+class ManagerTicketCreateForm(forms.Form):
+    user = forms.ModelChoiceField(
+        queryset=models.CustomUser.objects.none(),
+        widget=forms.Select(attrs=attrs),
+        label='کاربر'
+    )
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
+        super().__init__(*args, **kwargs)
+        if user is not None:
+            self.fields['user'].queryset = CustomUser.objects.filter(
+                Q(manager=user, user_type='3', user_profile__status='2') | Q(user_type='1')
+            )
+
+class EmployeeTicketCreateForm(forms.Form):
+    user = forms.ModelChoiceField(
+        queryset=models.CustomUser.objects.none(),
+        widget=forms.Select(attrs=attrs),
+        label='کاربر'
+    )
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
+        super().__init__(*args, **kwargs)
+        if user is not None:
+            manager = user.manager
+
+            if manager:
+                self.fields['user'].queryset = models.CustomUser.objects.filter(
+                    Q(user_type='1') | Q(id=manager.id)
+                )
+            else:
+                self.fields['user'].queryset = models.CustomUser.objects.filter(user_type='1')
+
+class ChatCreateForm(forms.ModelForm):
+    class Meta:
+        model = models.Message
+        fields = ['body', 'file']
+
+class ChatUpdateForm(forms.ModelForm):
+    class Meta:
+        model = models.Message
+        fields = ['body']

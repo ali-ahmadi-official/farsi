@@ -88,10 +88,11 @@ class Conversation(models.Model):
         verbose_name_plural = 'تیکت ها'
 
 class Message(models.Model):
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='user_messages', verbose_name='کاربر', editable=False)
-    conversation = models.ForeignKey(Conversation, on_delete=models.CASCADE, related_name='conversation_messages', verbose_name='تیکت', editable=False)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='user_messages', verbose_name='کاربر', editable=True)
+    conversation = models.ForeignKey(Conversation, on_delete=models.CASCADE, related_name='conversation_messages', verbose_name='تیکت', editable=True)
     body = models.TextField(verbose_name='پیام')
-    created_at = models.DateTimeField(verbose_name='تاریخ', auto_now=True)
+    file = models.FileField(verbose_name='فایل ضمیمه', upload_to='message/', null=True, blank=True)
+    created_at = models.DateTimeField(verbose_name='تاریخ', auto_now_add=True)
     seen = models.BooleanField(verbose_name='دیده شده', default=False)
 
     class Meta:
