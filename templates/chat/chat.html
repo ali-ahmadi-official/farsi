@@ -39,6 +39,9 @@
                         </div>
                         <div class="no-scrollbar ps-container ps-theme-default ps-active-y" id="chat-content"
                         style="overflow-y: scroll !important; height: calc(100vh - 115.5px) !important;">
+                            <div id="load-older" style="cursor:pointer; text-align:center; padding:10px; color:blue;">
+                            ⬆️ بارگذاری پیام‌های قدیمی‌تر
+                            </div>
                             {% for message_by_day in messages_by_day %}
                             <div class="media media-meta-day" style="color: black;">{{ message_by_day.date }}</div>
                             {% for message in message_by_day.messages %}

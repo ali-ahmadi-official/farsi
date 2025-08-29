@@ -725,9 +725,11 @@ class EmployeeTicketCreateOrRedirectView(LoginRequiredMixin, mixins.RoleRequired
 def chat(request, pk):
     user = request.user
     conversation = models.Conversation.objects.get(pk=pk)
-    messages = models.Message.objects.filter(conversation=conversation).order_by('created_at')
+    all_messages = models.Message.objects.filter(conversation=conversation).order_by('-created_at')
+    messages = all_messages[:50]
+    messages = reversed(messages)
 
-    you_messages_not_seen = messages.exclude(user=user).filter(seen=False)
+    you_messages_not_seen = all_messages.exclude(user=user).filter(seen=False)
     for you_message_not_seen in you_messages_not_seen:
         you_message_not_seen.seen = True
         you_message_not_seen.save()
@@ -772,18 +774,26 @@ def update_chat(request, pk):
 
     return render(request, "chat/messages.html", context)
 
-# @login_required
-# @mixins.user_in_conversation_or_admin
-# def load_older_messages(request, pk):
-#     before_id = request.GET.get("before_id")
-#     conversation = get_object_or_404(models.Conversation, pk=pk)
+@login_required
+@mixins.user_in_conversation_or_admin
+def load_older_messages(request, pk):
+    before_id = request.GET.get("before_id")
+    conversation = get_object_or_404(models.Conversation, pk=pk)
 
-#     messages = models.Message.objects.filter(
-#         conversation=conversation, id__lt=before_id
-#     ).order_by('-created_at')[:10]
-#     messages = reversed(messages)
+    messages = models.Message.objects.filter(
+        conversation=conversation, id__lt=before_id
+    ).order_by('-created_at')[:50]
+    messages = reversed(messages)
 
-#     return render(request, "chat/messages.html", {"messages": messages})
+    context = {
+        'user': request.user,
+        'conversation': conversation,
+        'messages': messages,
+    }
+
+    has_more = models.Message.objects.filter(conversation=conversation, id__lt=before_id).exists()
+
+    return render(request, "chat/load_older.html", context | {"has_more": has_more})
 
 @login_required
 @mixins.user_in_conversation_or_admin

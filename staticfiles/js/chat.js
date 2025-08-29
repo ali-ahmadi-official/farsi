@@ -49,28 +49,34 @@ $(document).ready(function () {
     setInterval(fetchMessages, 5000);
 });
 
-// $('#load-older').on('click', function () {
-//     const firstMessageId = $('#chat-content .media-chat').first().attr('id') || 0;
-//     const chatId = window.location.pathname.split('/')[2];
-//     const requestUrl = `/chats/${chatId}/older/?before_id=${firstMessageId}`;
+$(document).ready(function () {
+    $("#load-older").on("click", function () {
+        var chatContent = $("#chat-content");
+        var firstMessageId = $(".media-chat").first().attr("id");
 
-//     $.ajax({
-//         url: requestUrl,
-//         type: 'GET',
-//         success: function (data) {
-//             if (data.trim().length > 0) {
-//                 const atBottom = scrollingBox.scrollTop + scrollingBox.clientHeight >= scrollingBox.scrollHeight - 50;
-//                 $('#chat-content').prepend(data);
+        var oldScrollHeight = chatContent[0].scrollHeight;
+        var oldScrollTop = chatContent.scrollTop();
 
-//                 if (atBottom) {
-//                     scrollingBox.scrollTop = scrollingBox.scrollHeight;
-//                 }
-//             } else {
-//                 $('#load-older').text('پیامی باقی نمانده').css('cursor','default');
-//             }
-//         }
-//     });
-// });
+        $.ajax({
+            url: window.location.pathname.replace(/\/$/, "") + "/load_older/",
+            data: { "before_id": firstMessageId },
+            success: function (data) {
+                $("#load-older").after(data);
+
+                requestAnimationFrame(function () {
+                    var newScrollHeight = chatContent[0].scrollHeight;
+                    var diff = newScrollHeight - oldScrollHeight;
+                    chatContent.scrollTop(oldScrollTop + diff);
+                });
+
+                if ($("#no-more-messages").length > 0) {
+                    $("#load-older").text("📜 پیام قدیمی تری موجود نیست").css("color", "gray");
+                    $("#load-older").off("click");
+                }
+            }
+        });
+    });
+});
 
 document.getElementById('file-input').addEventListener('change', function () {
     var file = this.files[0];
@@ -117,12 +123,12 @@ function showInfo(button) {
     const parent1 = button.parentElement;
     const parent2 = parent1.parentElement;
     const parent3 = parent2.parentElement;
-    const x = parent3.querySelector('#x');    
+    const x = parent3.querySelector('#x');
     const id = parent3.id;
 
     const infoId = `info_${id}`;
     const infoDiv = document.getElementById(infoId);
-    
+
     if (infoDiv) {
         infoDiv.style.display = 'block';
         black.style.display = 'block';
