@@ -56,7 +56,8 @@ urlpatterns = [
     # chat urls
 
     path('chats/<int:pk>/', views.chat, name='chat'),
-    # path('chats/<int:pk>/update/', views.update_chat, name='update_chat'),
+    path('chats/<int:pk>/update/', views.update_chat, name='update_chat'),
+    # path('chats/<int:pk>/older/', views.load_older_messages, name='older_chat'),
     path('chats/<int:pk>/add/', views.add_chat, name='add_chat'),
     path('chats/message/<int:pk>/edit/', views.edit_chat, name='edit_chat'),
     path('chats/message/<int:pk>/delete/', views.delete_chat, name='delete_chat'),
